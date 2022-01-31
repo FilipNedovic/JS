@@ -37,7 +37,7 @@ class Doktor {
     this.prezime = prezime;
     this.specijalnost = specijalnost;
 
-    new Loger().log(`Kreiran doktor ${this.ime}`);
+    Loger.log(`Kreiran doktor ${this.ime}`);
   }
 
   zakaziPregled(pregled: Pregled, pacijent: Pacijent) {
@@ -59,19 +59,19 @@ class Pacijent {
     this.jmbg = jmbg;
     this.brojKartona++;
 
-    new Loger().log(`Kreiran pacijent ${this.ime}`);
+    Loger.log(`Kreiran pacijent ${this.ime}`);
   }
 
   izaberiLekara(doktor: Doktor) {
     this.izabraniLekar = doktor;
     doktor.pacijenti.push(this);
 
-    new Loger().log(`Izabran lekar ${doktor.ime} ${doktor.prezime}`);
+    Loger.log(`Izabran lekar ${doktor.ime} ${doktor.prezime}`);
   }
 
   obaviPregled(pregled) {
     let obavljenPregled = this.pregledi.find((el) => el === pregled);
-    return console.log(JSON.stringify(obavljenPregled));
+    console.log(JSON.stringify(obavljenPregled));
   }
 }
 
@@ -98,10 +98,9 @@ class Secer extends Pregled {
   vremePoslednjegObroka: string | Date;
 
   constructor() {
-    const pribaviVrednost = new Helperi();
     super();
-    this.vrednost = pribaviVrednost.randomBrUOpsegu(1, 7);
-    this.vremePoslednjegObroka = pribaviVrednost.vremeIDatum(8);
+    this.vrednost = Helperi.randomBrUOpsegu(1, 7);
+    this.vremePoslednjegObroka = Helperi.vremeIDatum(8);
   }
 }
 
@@ -111,14 +110,12 @@ class Pritisak extends Pregled {
   puls: number;
 
   constructor() {
-    const pribaviVrednost = new Helperi();
-
     super();
-    this.gornjaVrednost = pribaviVrednost.randomBrUOpsegu(100, 180);
-    this.donjaVrednost = pribaviVrednost.randomBrUOpsegu(50, 100);
-    this.puls = pribaviVrednost.randomBrUOpsegu(50, 100);
+    this.gornjaVrednost = Helperi.randomBrUOpsegu(100, 180);
+    this.donjaVrednost = Helperi.randomBrUOpsegu(50, 100);
+    this.puls = Helperi.randomBrUOpsegu(50, 100);
 
-    new Loger().log("Obavljen laboratorijski pregled");
+    Loger.log("Obavljen laboratorijski pregled");
   }
 }
 
@@ -127,32 +124,27 @@ class Holesterol extends Pregled {
   vremePoslednjegObroka: Date;
 
   constructor(vremePoslednjegObroka) {
-    const pribaviVrednost = new Helperi();
-
     super();
-    this.vrednost = pribaviVrednost.randomBrUOpsegu(1, 10);
+    this.vrednost = Helperi.randomBrUOpsegu(1, 10);
     this.vremePoslednjegObroka = vremePoslednjegObroka;
   }
 }
 
-class Loger {
-  vreme: string | Date;
+abstract class Loger {
+  static vreme: string | Date;
 
-  constructor() {
-    this.vreme = new Helperi().vremeIDatum();
-  }
-
-  log(akcija) {
-    return console.log(`[${this.vreme}] ${akcija}`);
+  static log(akcija) {
+    const vreme = Helperi.vremeIDatum();
+    console.log(`[${vreme}] ${akcija}`);
   }
 }
 
-class Helperi {
-  randomBrUOpsegu = (min, max) => {
+abstract class Helperi {
+  static randomBrUOpsegu = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
-  vremeIDatum = (sati?: number) => {
+  static vremeIDatum = (sati?: number) => {
     if (sati === undefined) {
       let d = new Date();
 
@@ -171,7 +163,6 @@ class Helperi {
     }
 
     let dateTime = new Date();
-
     dateTime.setHours(dateTime.getHours() - sati);
 
     return dateTime;
