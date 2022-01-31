@@ -57,7 +57,7 @@ class Pacijent {
     this.ime = ime;
     this.prezime = prezime;
     this.jmbg = jmbg;
-    this.brojKartona++
+    this.brojKartona++;
 
     new Loger().log(`Kreiran pacijent ${this.ime}`);
   }
@@ -70,7 +70,7 @@ class Pacijent {
   }
 
   obaviPregled(pregled) {
-    let obavljenPregled = this.pregledi.find(el => el === pregled);
+    let obavljenPregled = this.pregledi.find((el) => el === pregled);
     return console.log(JSON.stringify(obavljenPregled));
   }
 }
@@ -80,16 +80,22 @@ abstract class Pregled {
   vreme: string;
 
   constructor() {
-    let today = new Date();
+    let d = new Date();
 
-    this.datum = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-    this.vreme = `${today.getHours()}:${today.getMinutes()}`;
+    this.datum =
+      ("0" + d.getDate()).slice(-2) +
+      "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) +
+      "-" +
+      d.getFullYear();
+    this.vreme =
+      ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   }
 }
 
 class Secer extends Pregled {
   vrednost: number;
-  vremePoslednjegObroka: Date;
+  vremePoslednjegObroka: string | Date;
 
   constructor() {
     const pribaviVrednost = new Helperi();
@@ -112,7 +118,7 @@ class Pritisak extends Pregled {
     this.donjaVrednost = pribaviVrednost.randomBrUOpsegu(50, 100);
     this.puls = pribaviVrednost.randomBrUOpsegu(50, 100);
 
-    new Loger().log('Obavljen laboratorijski pregled');
+    new Loger().log("Obavljen laboratorijski pregled");
   }
 }
 
@@ -130,14 +136,14 @@ class Holesterol extends Pregled {
 }
 
 class Loger {
-  vreme: Date;
+  vreme: string | Date;
 
   constructor() {
     this.vreme = new Helperi().vremeIDatum();
   }
 
   log(akcija) {
-      return console.log(`[${this.vreme}] ${akcija}`);
+    return console.log(`[${this.vreme}] ${akcija}`);
   }
 }
 
@@ -146,19 +152,31 @@ class Helperi {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
-  vremeIDatum = (sati?: number): Date => {
+  vremeIDatum = (sati?: number) => {
     if (sati === undefined) {
-      let dateTime = new Date();
+      let d = new Date();
+
+      let dateTime =
+        ("0" + d.getDate()).slice(-2) +
+        "-" +
+        ("0" + (d.getMonth() + 1)).slice(-2) +
+        "-" +
+        d.getFullYear() +
+        " " +
+        ("0" + d.getHours()).slice(-2) +
+        ":" +
+        ("0" + d.getMinutes()).slice(-2);
+
       return dateTime;
     }
 
     let dateTime = new Date();
+
     dateTime.setHours(dateTime.getHours() - sati);
 
     return dateTime;
   };
 }
-
 
 let drMilan = new Doktor("Milan", "Milanovic", "kardiolog");
 let pacDragan = new Pacijent("Dragan", "Draganovic", 2501991980003);
